@@ -1,3 +1,6 @@
 .ipynb_checkpoints
 xgboost2plot.ipynb
 source/.ipynb_checkpoints
+requirements.txt
+source/__pycache__
+model
