@@ -22,30 +22,25 @@ def train(model,
     model.fit(xtrain, ytrain)
     
     # extract rules from fitted model
-    dataset = model._Booster.trees_to_dataframe()
-    dataset = pd.melt(dataset, id_vars = ['ID', "Feature", "Split"], value_vars= ["Yes", "No", "Missing"], 
-            var_name = 'cat', value_name = 'to')
-    leaves = dataset.loc[dataset.Feature == 'Leaf', ['ID']] #.join(dataset, how = 'left', on =)
-    nodes = dataset[['ID', 'to', 'Feature', 'Split']].dropna()
-    k = pd.merge(leaves, nodes, how = 'left', left_on='ID', right_on = 'to')[[ 'ID_y', 'Feature', 'Split']]
-    k = k.rename(columns = {'ID_y': 'ID'})
-    k['index_node'] = k['ID'].copy()
-    k['Rule_1'] =  list(zip(k['Feature'], k['Split']))
-    k = k[['index_node', 'ID', 'Rule_1']].drop_duplicates()
-    do_more = (k['ID'].str.split('-').map(lambda x: x[1]).astype(int) > 0)
-    keep_k = []
-    while do_more.any():
-        k = pd.merge(k, nodes, how = 'left', left_on='ID', right_on = 'to').drop(columns=['ID_x', 'to']).rename(columns = {'ID_y': 'ID'}).drop_duplicates()
-        k['Rule_2'] =  list(zip(k['Feature'], k['Split']))
-        del k['Feature'] 
-        del k['Split'] 
-        k = k.drop_duplicates()
-        keep_k.append(k[(k['ID'].str.split('-').map(lambda x: x[1]).astype(int) == 0)])
-        do_more = (k['ID'].str.split('-').map(lambda x: x[1]).astype(int) > 0)
-        k = k[do_more]   
-    keep_k = pd.concat(keep_k)
-    model.rule_df = keep_k.drop_duplicates()
-    model.rule_df 
+    ruledf = model._Booster.trees_to_dataframe()
+    ruledf = pd.melt(ruledf, id_vars = ['ID', "Tree", "Feature", "Split"], value_vars= ["Yes", "No", "Missing"], 
+                var_name = 'cat', value_name = 'to')
+
+    ruledf['rule'] = ruledf[['Feature','Split', 'cat']].apply(lambda x: f'{x["Feature"]} < {x["Split"]}' if x['cat'] in set(['Yes', 'Missing']) 
+                                      else f'{x["Feature"]} >= {x["Split"]}', axis=1)
+    leaves = ruledf.loc[ruledf.Feature == 'Leaf', ["Tree", 'ID']].drop_duplicates().rename(columns = {'ID': 'leaf_index'})
+    nodes = ruledf[['ID', 'to', 'rule']].dropna().drop_duplicates()
+    def rule_for_each_leave(leaf_index, nodes):
+        queryID = leaf_index
+        a = nodes[nodes.to==queryID]
+        ruleresult = [a]
+        while a.shape[0] > 0:
+            a = nodes[nodes.to.isin(a.ID)]
+            ruleresult.append(a)
+        return(pd.concat(ruleresult).rule.tolist())
+    rule_for_each_leave(leaf_index = '0-3', nodes = nodes)
+    leaves['rules'] = leaves.leaf_index.map(lambda x: rule_for_each_leave(x, nodes))
+    model.rule_df = leaves
     
     # save model
     p = Path(model_path) 
