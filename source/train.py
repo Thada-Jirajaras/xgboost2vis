@@ -37,8 +37,7 @@ def train(model,
         while a.shape[0] > 0:
             a = nodes[nodes.to.isin(a.ID)]
             ruleresult.append(a)
-        return(pd.concat(ruleresult).rule.tolist())
-    rule_for_each_leave(leaf_index = '0-3', nodes = nodes)
+        return(pd.concat(ruleresult).rule.tolist()[::-1])
     leaves['rules'] = leaves.leaf_index.map(lambda x: rule_for_each_leave(x, nodes))
     model.rule_df = leaves
     
