@@ -25,7 +25,7 @@ def train(model,
     ruledf = model._Booster.trees_to_dataframe()
     ruledf = pd.melt(ruledf, id_vars = ['ID', "Tree", "Feature", "Split"], value_vars= ["Yes", "No", "Missing"], 
                 var_name = 'cat', value_name = 'to')
-
+    ruledf['Split'] = ruledf['Split'].map(lambda x: round(x, 2))
     ruledf['rule'] = ruledf[['Feature','Split', 'cat']].apply(lambda x: f'{x["Feature"]} < {x["Split"]}' if x['cat'] in set(['Yes', 'Missing']) 
                                       else f'{x["Feature"]} >= {x["Split"]}', axis=1)
     leaves = ruledf.loc[ruledf.Feature == 'Leaf', ["Tree", 'ID']].drop_duplicates().rename(columns = {'ID': 'leaf_index'})
