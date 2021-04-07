@@ -37,11 +37,11 @@ from source.predict import predict, model_fn
 model = model_fn()
 class_zero_count, class_one_count, class_one_prob = predict(model, x, y)
 
-print('NA will show as -1')
-for name, matrix in {'class_one_prob': class_one_prob.fillna(-1), 'class_zero_count': class_zero_count.fillna(0).astype(int), 
+print('NA will show as -0.00001')
+for name, matrix in {'class_one_prob': class_one_prob.fillna(-0.00001), 'class_zero_count': class_zero_count.fillna(0).astype(int), 
                      'class_one_count': class_one_count.fillna(0).astype(int)}.items():
     print(f'### {name}=================================================================')
-    display(matrix)#.style.background_gradient())
+    display(matrix.style.background_gradient(axis = None))
     print()
     print()
 ```
