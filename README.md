@@ -1,7 +1,8 @@
-```python
-%load_ext autoreload
-%autoreload 2
-```
+# Explanation
+
+This library helps you understand the data that you are analysing better. It uses XGBoost to find some relations in the data in forms of if-else rules in order to cluster data into groups. Then, it visualises the percentage of positive class as well as the number of samples of positive and zero class in the form of 2D matrix. you may use "pip install xgboost" to install the required library. Hope this library can help you to get some idea from your data.
+
+The example below show the probability of getting some kind of cardiovascular disease  in ten year. You can see the probability by clusters in the first matrix in the section "Use model to visualise data by group and class". Also, the other 2 matrices show a number of class 1 and class 0 for each cluster.  
 
 # Read data
 
@@ -36,12 +37,10 @@ train(model, x, y)
 from source.predict import predict, model_fn
 model = model_fn()
 class_zero_count, class_one_count, class_one_prob = predict(model, x, y)
-
-print('NA will show as -0.00001')
-for name, matrix in {'class_one_prob': class_one_prob.fillna(-0.00001), 'class_zero_count': class_zero_count.fillna(0).astype(int), 
-                     'class_one_count': class_one_count.fillna(0).astype(int)}.items():
+for name, matrix in {'class_one_prob': class_one_prob, 'class_zero_count': class_zero_count, 
+                     'class_one_count': class_one_count}.items():
     print(f'### {name}=================================================================')
-    display(matrix.style.background_gradient(axis = None))
+    display(matrix)
     print()
     print()
 ```

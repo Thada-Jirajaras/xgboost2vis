@@ -29,4 +29,9 @@ def predict(model, x, y):
     class_one_count = pd.pivot_table(output.reset_index(), index = 'rules_x', columns = 'rules_y', values = 1)
     class_one_prob = pd.pivot_table(output.reset_index(), index = 'rules_x', columns = 'rules_y', values = 'positive_prob')
 
+    # set backgroud colour
+    class_zero_count = class_zero_count.fillna(0).astype(int).style.background_gradient(axis = None)
+    class_one_count = class_one_count.fillna(0).astype(int).style.background_gradient(axis = None)
+    class_one_prob = class_one_prob.style.format('{:.2%}').background_gradient(axis = None).highlight_null('orange')
+    
     return(class_zero_count, class_one_count, class_one_prob)
