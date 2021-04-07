@@ -1,8 +1,10 @@
 # Explanation
 
-This library helps you understand the data that you are analysing better. It uses XGBoost to find some relations in the data in forms of if-else rules in order to cluster data into groups. Then, it visualises the percentage of positive class as well as the number of samples of positive and zero class in the form of 2D matrix. you may use "pip install xgboost" to install the required library. Hope this library can help you to get some idea from your data.
+This library helps you understand the data that you are analysing better. It uses XGBoost to find some relations in the data in forms of if-else rules in order to cluster data into groups. Then, it visualises the percentage of positive class as well as the number of samples of positive and zero class in the form of 2D matrices. you may use "pip install xgboost" to install the required library. Hope this library can help you to get some idea from your data.
 
-The example below show the probability of getting some kind of cardiovascular disease  in ten year. You can see the probability by clusters in the first matrix in the section "Use model to visualise data by group and class". Also, the other 2 matrices show a number of class 1 and class 0 for each cluster.  
+The example below showห the probability of getting some kind of cardiovascular disease in ten yearห. You can see the probability by clusters in the first matrix in the section "Use model to visualise data by group and class". Also, the other 2 matrices show a number of class 1 and class 0 for each cluster. 
+
+!!!Note that this version of the library only supports the data with binary classes. If you provide data with multi classes, unexpected results may occur
 
 # Read data
 
