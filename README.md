@@ -6,7 +6,7 @@ The example below showห the probability of getting some kind of cardiovascular
 
 !!!Note that this version of the library only supports the data with binary classes. If you provide data with multi classes, unexpected results may occur
 
-# Read data
+# Read data (framingham dataset [from kaggle][https://www.kaggle.com/neisha/heart-disease-prediction-using-logistic-regression/data] for 10-Year Coronary Heart Disease Risk Prediction')
 
 
 ```python
